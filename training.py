@@ -18,7 +18,7 @@ local_path_model_checkpoints = "checkpoints/"
 
 # Cluster
 cluster_path_in = "/scratch/alapel/data/trainset_freq_projected_nonoise.hdf"
-cluster_path_out = "/scratch/alapel/out/"
+cluster_path_out = "/scratch/alapel/"
 cluster_path_model_checkpoints = "/scratch/alapel/checkpoints/"
 
 # Datasets
@@ -119,4 +119,4 @@ figure = corner.corner(
     samples, labels=[r"$m_1$", r"$m_2$", r"$\Lambda_1$", r"$\Lambda_2$"],
     show_titles=True, truths=[params[0]*1.7, params[1]*1.36,
                               params[2]*1000, params[3]*1000])
-plt.savefig("figures/posterior_masses_lambdas.png")
+plt.savefig(cluster_path_out + "figures/posterior_masses_lambdas.png")

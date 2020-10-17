@@ -4,6 +4,8 @@ mcmc_sampling.py
 data/*
 out/*
 checkpoints/*
+bilby_wfgen.ipynb
+pycbc_wfgen.ipynb
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

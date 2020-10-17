@@ -1,6 +1,6 @@
 # Local files/folders
-EOS*
-mcmc*
+EOS.ipynb
+mcmc_sampling.py
 data/*
 out/*
 checkpoints/*

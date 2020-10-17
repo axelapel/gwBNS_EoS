@@ -5,8 +5,8 @@
 #SBATCH -N 1
 #SBATCH --ntasks-per-node=4
 #SBATCH -t 16:00:00
-#SBATCH -e /scratch/alapel/log_train/%N.%j.%a.err
-#SBATCH -o /scratch/alapel/log_train/%N.%j.%a.out
+#SBATCH -e ../log_train/%N.%j.%a.err
+#SBATCH -o ../log_train/%N.%j.%a.out
 #SBATCH --mail-type=BEGIN,END
 #SBATCH --mail-user=axel.lapel@oca.eu
 

@@ -62,9 +62,9 @@ def s_net(n_in=9198+4, n_out=4):
     """
     Sequential pytorch model for scale network.
     """
-    return nn.Sequential(nn.Linear(n_in, 128),
+    return nn.Sequential(nn.Linear(n_in, 16),
                          nn.LeakyReLU(),
-                         nn.Linear(128, 16),
+                         nn.Linear(16, 16),
                          nn.LeakyReLU(),
                          nn.Linear(16, n_out),
                          nn.Tanh())
@@ -74,9 +74,9 @@ def t_net(n_in=9198+4, n_out=4):
     """
     Sequential pytorch model for translation network.
     """
-    return nn.Sequential(nn.Linear(n_in, 128),
+    return nn.Sequential(nn.Linear(n_in, 16),
                          nn.LeakyReLU(),
-                         nn.Linear(128, 16),
+                         nn.Linear(16, 16),
                          nn.LeakyReLU(),
                          nn.Linear(16, n_out))
 

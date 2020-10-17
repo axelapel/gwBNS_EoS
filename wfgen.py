@@ -30,6 +30,10 @@ def save(list_of_concatenated_strains, list_of_associated_params, path):
 local_path = "data/"
 cluster_path = "/scratch/alapel/data/"
 
+train = "trainset_freq_projected_nonoise.hdf"
+eval = "validationset_freq_projected_nonoise.hdf"
+test = "testset_freq_projected_nonoise.hdf"
+
 # Get arguments (if file is too large and requires segmentation)
 """
 description = "Generate waveforms"
@@ -62,15 +66,16 @@ polarization = 0
 
 list_of_concatenated_strains = []
 list_of_params = []
-n_samples = 75000
+n_samples = 2
 
 for i in range(n_samples):
 
     # Uniform priors
-    mass1 = np.random.uniform(1.36, 1.7)
-    mass2 = np.random.uniform(1.17, 1.36)
-    lambda1 = np.random.uniform(0, 600)
-    lambda2 = np.random.uniform(0, 600)
+    upper_values = [1.7, 1.36, 600]
+    mass1 = np.random.uniform(1.36, upper_values[0])
+    mass2 = np.random.uniform(1.17, upper_values[1])
+    lambda1 = np.random.uniform(0, upper_values[2])
+    lambda2 = np.random.uniform(0, upper_values[2])
 
     # Intrinsic parameters for the waveform
     dict_params = dict(approximant="IMRPhenomPv2_NRTidal",
@@ -116,8 +121,10 @@ for i in range(n_samples):
     imag_v1 = signal_v1.imag()
 
     # Storing
-    list_of_params.append({"mass_1": mass1/1.7, "mass_2": mass2/1.36,
-                           "lambda_1": lambda1/1000, "lambda_2": lambda2/1000})
+    list_of_params.append({"mass_1": mass1/upper_values[0],
+                           "mass_2": mass2/upper_values[1],
+                           "lambda_1": lambda1/upper_values[2],
+                           "lambda_2": lambda2/upper_values[2]})
     list_of_concatenated_strains.append(
         np.concatenate((real_h1, real_l1, real_v1, imag_h1, imag_l1, imag_v1), axis=0))
 
@@ -126,5 +133,4 @@ for i in range(n_samples):
 print("\rStrains generated.")
 
 # Saving
-save(list_of_concatenated_strains, list_of_params,
-     cluster_path + "trainset_freq_projected_nonoise.hdf")
+save(list_of_concatenated_strains, list_of_params, cluster_path + test)

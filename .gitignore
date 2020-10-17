@@ -4,6 +4,7 @@ mcmc_sampling.py
 data/*
 out/*
 checkpoints/*
+figures/*
 bilby_wfgen.ipynb
 pycbc_wfgen.ipynb
 

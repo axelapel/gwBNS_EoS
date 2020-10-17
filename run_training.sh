@@ -8,5 +8,7 @@
 #SBATCH -A a226
 #SBATCH -e ../log_train/%N.%j.%a.err
 #SBATCH -o ../log_train/%N.%j.%a.out
+#SBATCH --mail-type=BEGIN,END
+#SBATCH --mail-user=axel.lapel@oca.eu
 
 python3 training.py

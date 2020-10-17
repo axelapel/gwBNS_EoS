@@ -62,15 +62,15 @@ polarization = 0
 
 list_of_concatenated_strains = []
 list_of_params = []
-n_samples = 100000
+n_samples = 75000
 
 for i in range(n_samples):
 
     # Uniform priors
     mass1 = np.random.uniform(1.36, 1.7)
     mass2 = np.random.uniform(1.17, 1.36)
-    lambda1 = np.random.uniform(0, 1000)
-    lambda2 = np.random.uniform(0, 1000)
+    lambda1 = np.random.uniform(0, 600)
+    lambda2 = np.random.uniform(0, 600)
 
     # Intrinsic parameters for the waveform
     dict_params = dict(approximant="IMRPhenomPv2_NRTidal",

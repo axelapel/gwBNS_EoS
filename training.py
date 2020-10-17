@@ -22,8 +22,8 @@ cluster_path_out = "/scratch/alapel/"
 cluster_path_model_checkpoints = "/scratch/alapel/checkpoints/"
 
 # Datasets
-batch_size = 1000
-trainset = hdf5datasets.HDF5EoSDataset(local_path_in)
+batch_size = 500
+trainset = hdf5datasets.HDF5EoSDataset(cluster_path_in)
 trainloader = DataLoader(trainset, batch_size=batch_size, shuffle=True)
 
 # GPU if available
@@ -111,12 +111,12 @@ for i in range(N):
 # Renormalization of the sample
 samples[:, 0] *= 1.7
 samples[:, 1] *= 1.36
-samples[:, 2] *= 1000
-samples[:, 3] *= 1000
+samples[:, 2] *= 600
+samples[:, 3] *= 600
 
 # TODO : improve the plot
 figure = corner.corner(
     samples, labels=[r"$m_1$", r"$m_2$", r"$\Lambda_1$", r"$\Lambda_2$"],
     show_titles=True, truths=[params[0]*1.7, params[1]*1.36,
-                              params[2]*1000, params[3]*1000])
+                              params[2]*600, params[3]*600])
 plt.savefig(cluster_path_out + "figures/posterior_masses_lambdas.png")

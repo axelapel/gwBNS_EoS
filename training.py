@@ -119,4 +119,4 @@ figure = corner.corner(
     samples, labels=[r"$m_1$", r"$m_2$", r"$\Lambda_1$", r"$\Lambda_2$"],
     show_titles=True, truths=[params[0]*1.7, params[1]*1.36,
                               params[2]*1000, params[3]*1000])
-plt.savefig("figures/posterior.png")
+plt.savefig("figures/posterior_masses_lambdas.png")

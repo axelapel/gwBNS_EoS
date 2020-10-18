@@ -65,7 +65,7 @@ optimizer = torch.optim.Adam(
     [p for p in rNVP.parameters() if p.requires_grad == True], lr=5e-4)
 
 # Training
-max_epoch = 25
+max_epoch = 15
 epochs = np.arange(max_epoch)
 train_losses = np.zeros(max_epoch)
 val_losses = np.zeros(max_epoch)
@@ -105,14 +105,14 @@ for epoch in epochs:
         loss_val = - rNVP.log_prob(input, waveform).mean()
     val_losses[epoch] = loss_val
 
-    if epoch + 1 == 25 or epoch + 1 == 50:
+    if epoch + 1 == 15 or epoch + 1 == 50:
         print("Model saved.")
         torch.save({
             "epoch": epoch,
             "model_state_dict": rNVP.state_dict(),
             "optimizer_state_dict": optimizer.state_dict(),
             "loss": loss,
-        }, local_path_model_checkpoints + "trained_rNVP_{}.pth".format(epoch+1))
+        }, cluster_path_model_checkpoints + "trained_rNVP_{}.pth".format(epoch+1))
 
     print("[epoch {}/{}] loss = {:.3f}".format(epoch+1, max_epoch, loss))
 print("Training over.")

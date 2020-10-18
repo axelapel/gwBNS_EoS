@@ -31,7 +31,7 @@ local_path = "data/"
 cluster_path = "/scratch/alapel/data/"
 
 train = "trainset_freq_projected_nonoise.hdf"
-eval = "validationset_freq_projected_nonoise.hdf"
+evaluation = "validationset_freq_projected_nonoise.hdf"
 test = "testset_freq_projected_nonoise.hdf"
 
 # Get arguments (if file is too large and requires segmentation)

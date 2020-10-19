@@ -66,7 +66,7 @@ polarization = 0
 
 list_of_concatenated_strains = []
 list_of_params = []
-n_samples = 2
+n_samples = 76000
 
 for i in range(n_samples):
 
@@ -127,11 +127,12 @@ for i in range(n_samples):
                            "lambda_2": lambda2/upper_values[2]})
     max = np.max((real_h1, real_l1, real_v1, imag_h1, imag_l1, imag_v1))
     list_of_concatenated_strains.append(
-        np.concatenate((real_h1/max, real_l1/max, real_v1/max, imag_h1/max, imag_l1/max, imag_v1/max), axis=0))
+        np.concatenate((real_h1/max, real_l1/max, real_v1/max,
+                        imag_h1/max, imag_l1/max, imag_v1/max), axis=0))
 
     print("\rProgress: {:.0f}%".format(i/n_samples*100),
           end="", flush=True)
 print("\rStrains generated.")
 
 # Saving
-save(list_of_concatenated_strains, list_of_params, cluster_path + test)
+save(list_of_concatenated_strains, list_of_params, cluster_path + train)

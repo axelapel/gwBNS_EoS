@@ -13,12 +13,14 @@ import hdf5datasets
 # Local
 local_path_in = "data/"
 local_path_model_checkpoints = "checkpoints/"
+local_path_fig = "figures/"
 
 # Cluster
 cluster_path_in = "/scratch/alapel/data/"
 cluster_path_model_checkpoints = "/scratch/alapel/checkpoints/"
+cluster_path_fig = "/scratch/alapel/figures/"
 
-#---------- Datasets ----------#
+# DATASETS
 batch_size = 500
 # Train
 trainset = hdf5datasets.HDF5EoSDataset(
@@ -46,6 +48,12 @@ print("Device = {}".format(dev))
 
 ############################## Training Real NVP ##############################
 
+# Start from a previous checkpoint
+from_file = False
+last_train_epoch = 5
+train_file = cluster_path_model_checkpoints + \
+    "trained_rNVP_{}.pth".format(last_train_epoch)
+
 # Coupling layer
 s_net = flow.s_net
 t_net = flow.t_net
@@ -54,10 +62,11 @@ t_net = flow.t_net
 masks = flow.set_4d_masks()
 
 # Initial distribution
-normal = torch.distributions.MultivariateNormal(torch.zeros(4), torch.eye(4))
+normal_gaussian = torch.distributions.MultivariateNormal(
+    torch.zeros(4), torch.eye(4))
 
 # Instance of the flow
-rNVP = flow.RealNVP(s_net, t_net, masks, normal)
+rNVP = flow.RealNVP(s_net, t_net, masks, normal_gaussian)
 rNVP.to(torch.device(dev))
 
 # Optimizer
@@ -65,7 +74,14 @@ optimizer = torch.optim.Adam(
     [p for p in rNVP.parameters() if p.requires_grad == True], lr=5e-4)
 
 # Training
-max_epoch = 10
+if from_file == True:
+    checkpoint = torch.load(local_path_model_checkpoints + train_file)
+    rNVP.load_state_dict(checkpoint['model_state_dict'])
+    optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+    epoch = checkpoint['epoch']
+    loss = checkpoint['loss']
+
+max_epoch = 40
 epochs = np.arange(max_epoch)
 train_losses = np.zeros(max_epoch)
 val_losses = np.zeros(max_epoch)
@@ -105,7 +121,7 @@ for epoch in epochs:
         loss_val = - rNVP.log_prob(input, waveform).mean()
     val_losses[epoch] = loss_val
 
-    if epoch + 1 == 15 or epoch + 1 == 50:
+    if epoch + 1 == 20 or epoch + 1 == 40:
         print("Model saved.")
         torch.save({
             "epoch": epoch,
@@ -117,39 +133,6 @@ for epoch in epochs:
     print("[epoch {}/{}] loss = {:.3f}".format(epoch+1, max_epoch, loss))
 print("Training over.")
 
-################################### Testing ###################################
-
-test_waveform = testset[0][0]
-params = [testset[0][1], testset[0][2], testset[0][3], testset[0][4]]
-
-# The number of samples have to be a fraction of the batch_size
-test_waveform_repeat = torch.from_numpy(
-    np.tile(test_waveform, (batch_size, 1)))
-
-# Sampling
-samples = rNVP.sample(
-    batch_size, test_waveform_repeat.type(dtype)).detach().cpu().numpy()
-N = 500
-for i in range(N):
-    x = rNVP.sample(batch_size, test_waveform_repeat.type(
-        dtype)).detach().numpy()
-    samples = np.vstack([samples, x])
-
-# Renormalization of the sample
-upper_values = [1.7, 1.36, 600]
-samples[:, 0] *= upper_values[0]
-samples[:, 1] *= upper_values[1]
-samples[:, 2] *= upper_values[2]
-samples[:, 3] *= upper_values[2]
-
-# TODO : improve the plot
-figure = corner.corner(
-    samples, labels=[r"$m_1$", r"$m_2$", r"$\Lambda_1$", r"$\Lambda_2$"],
-    show_titles=True, truths=[params[0]*upper_values[0], params[1]*upper_values[1],
-                              params[2]*upper_values[2], params[3]*upper_values[2]])
-# plt.savefig("figures/posterior_masses_lambdas.png")
-plt.savefig("/scratch/alapel/" + "figures/posterior_masses_lambdas.png")
-
 fig, ax = plt.subplots()
 ax.plot(epochs, train_losses, c="k", label="Training")
 ax.plot(epochs, val_losses, c="tab:green", label="Validation")
@@ -157,4 +140,4 @@ ax.set(xlabel="Epochs", ylabel="Loss")
 ax.grid()
 ax.legend()
 # plt.savefig("figures/loss.png")
-plt.savefig("/scratch/alapel/" + "figures/loss.png")
+plt.savefig(cluster_path_fig + "loss.png")

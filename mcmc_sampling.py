@@ -107,4 +107,4 @@ result = bilby.run_sampler(
     conversion_function=bilby.gw.conversion.generate_all_bns_parameters,
     resume=True)
 
-result.plot_corner()
+result.plot_corner(save=True)

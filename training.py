@@ -65,7 +65,7 @@ optimizer = torch.optim.Adam(
     [p for p in rNVP.parameters() if p.requires_grad == True], lr=5e-4)
 
 # Training
-max_epoch = 15
+max_epoch = 10
 epochs = np.arange(max_epoch)
 train_losses = np.zeros(max_epoch)
 val_losses = np.zeros(max_epoch)
@@ -129,7 +129,7 @@ test_waveform_repeat = torch.from_numpy(
 # Sampling
 samples = rNVP.sample(
     batch_size, test_waveform_repeat.type(dtype)).detach().cpu().numpy()
-N = 1000
+N = 500
 for i in range(N):
     x = rNVP.sample(batch_size, test_waveform_repeat.type(
         dtype)).detach().numpy()
@@ -147,6 +147,7 @@ figure = corner.corner(
     samples, labels=[r"$m_1$", r"$m_2$", r"$\Lambda_1$", r"$\Lambda_2$"],
     show_titles=True, truths=[params[0]*upper_values[0], params[1]*upper_values[1],
                               params[2]*upper_values[2], params[3]*upper_values[2]])
+# plt.savefig("figures/posterior_masses_lambdas.png")
 plt.savefig("/scratch/alapel/" + "figures/posterior_masses_lambdas.png")
 
 fig, ax = plt.subplots()
@@ -155,4 +156,5 @@ ax.plot(epochs, val_losses, c="tab:green", label="Validation")
 ax.set(xlabel="Epochs", ylabel="Loss")
 ax.grid()
 ax.legend()
+# plt.savefig("figures/loss.png")
 plt.savefig("/scratch/alapel/" + "figures/loss.png")

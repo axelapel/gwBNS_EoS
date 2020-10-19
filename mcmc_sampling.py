@@ -66,13 +66,13 @@ priors.pop('lambda_1')
 priors.pop('lambda_2')
 priors.pop("mass_ratio")
 priors.pop("chirp_mass")
-priors['mass1'] = bilby.core.prior.Uniform(
+priors['mass_1'] = bilby.core.prior.Uniform(
     1.36, 1.7, name='mass_1')
-priors['mass2'] = bilby.core.prior.Uniform(
+priors['mass_2'] = bilby.core.prior.Uniform(
     1.17, 1.36, name='mass_2')
-priors['lambda1'] = bilby.core.prior.Uniform(
+priors['lambda_1'] = bilby.core.prior.Uniform(
     0, 600, name='lambda_1')
-priors['lambda2'] = bilby.core.prior.Uniform(
+priors['lambda_2'] = bilby.core.prior.Uniform(
     0, 600, name='lambda_2')
 
 # For spectral decomposition
@@ -102,7 +102,7 @@ likelihood = bilby.gw.GravitationalWaveTransient(
 
 # Run sampler
 result = bilby.run_sampler(
-    likelihood=likelihood, priors=priors, sampler='dynesty', npoints=1000,
+    likelihood=likelihood, priors=priors, sampler='emcee', npoints=1000,
     injection_parameters=injection_parameters, outdir=outdir, label=label,
     conversion_function=bilby.gw.conversion.generate_all_bns_parameters,
     resume=True)

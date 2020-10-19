@@ -120,13 +120,14 @@ for i in range(n_samples):
     imag_l1 = signal_l1.imag()
     imag_v1 = signal_v1.imag()
 
-    # Storing
+    # Storing + normalization
     list_of_params.append({"mass_1": mass1/upper_values[0],
                            "mass_2": mass2/upper_values[1],
                            "lambda_1": lambda1/upper_values[2],
                            "lambda_2": lambda2/upper_values[2]})
+    max = np.max((real_h1, real_l1, real_v1, imag_h1, imag_l1, imag_v1))
     list_of_concatenated_strains.append(
-        np.concatenate((real_h1, real_l1, real_v1, imag_h1, imag_l1, imag_v1), axis=0))
+        np.concatenate((real_h1/max, real_l1/max, real_v1/max, imag_h1/max, imag_l1/max, imag_v1/max), axis=0))
 
     print("\rProgress: {:.0f}%".format(i/n_samples*100),
           end="", flush=True)

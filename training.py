@@ -23,10 +23,10 @@ cluster_path_fig = "/scratch/alapel/figures/"
 # DATASETS
 batch_size = 500
 # Train
-trainset = hdf5datasets.merge_sets(cluster_path_in + "train/")
+trainset = hdf5datasets.merge_sets(cluster_path_in + "train/*")
 trainloader = DataLoader(trainset, batch_size=batch_size, shuffle=True)
 # Validation
-evalset = hdf5datasets.merge_sets(cluster_path_in + "evaluation/")
+evalset = hdf5datasets.merge_sets(cluster_path_in + "evaluation/*")
 evaloader = DataLoader(evalset, batch_size=batch_size, shuffle=True)
 # Test
 testset = hdf5datasets.HDF5EoSDataset(

@@ -28,10 +28,6 @@ trainloader = DataLoader(trainset, batch_size=batch_size, shuffle=True)
 # Validation
 evalset = hdf5datasets.merge_sets(cluster_path_in + "evaluation/*")
 evaloader = DataLoader(evalset, batch_size=batch_size, shuffle=True)
-# Test
-testset = hdf5datasets.HDF5EoSDataset(
-    cluster_path_in + "test/test_GW170817.hdf")
-testloader = DataLoader(testset, batch_size=1, shuffle=True)
 
 # GPU if available
 if torch.cuda.is_available():
@@ -119,7 +115,7 @@ for epoch in epochs:
         loss_val = - rNVP.log_prob(input, waveform).mean()
     val_losses[epoch] = loss_val
 
-    if epoch + 1 % 10 == 0:
+    if (epoch + 1) % 5 == 0:
         print("Model saved.")
         torch.save({
             "epoch": epoch,

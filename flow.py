@@ -83,12 +83,12 @@ def t_net(n_in=9198+4, n_out=4):
 
 def set_4d_masks():
     """
-    Masks for a 4 parameters inference (5 times).
+    Masks for a 4 parameters inference (4 times).
     """
     masks_4d = torch.from_numpy(
         np.array([[0, 0, 0, 1], [0, 0, 1, 0], [0, 1, 0, 0],
                   [1, 0, 0, 0], [0, 0, 1, 1], [0, 1, 0, 1],
                   [1, 0, 1, 0], [1, 0, 0, 1], [0, 1, 1, 0],
                   [1, 1, 0, 0], [0, 1, 1, 1], [1, 0, 1, 1],
-                  [1, 1, 0, 1], [1, 1, 1, 0]]*5).astype(np.float32))
+                  [1, 1, 0, 1], [1, 1, 1, 0]]*4).astype(np.float32))
     return masks_4d

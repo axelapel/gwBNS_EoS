@@ -23,16 +23,14 @@ cluster_path_fig = "/scratch/alapel/figures/"
 # DATASETS
 batch_size = 500
 # Train
-trainset = hdf5datasets.HDF5EoSDataset(
-    local_path_in + "trainset_freq_projected_nonoise.hdf")
+trainset = hdf5datasets.merge_sets(cluster_path_in + "train/")
 trainloader = DataLoader(trainset, batch_size=batch_size, shuffle=True)
 # Validation
-evalset = hdf5datasets.HDF5EoSDataset(
-    local_path_in + "validationset_freq_projected_nonoise.hdf")
+evalset = hdf5datasets.merge_sets(cluster_path_in + "evaluation/")
 evaloader = DataLoader(evalset, batch_size=batch_size, shuffle=True)
 # Test
 testset = hdf5datasets.HDF5EoSDataset(
-    local_path_in + "testset_freq_projected_nonoise.hdf")
+    cluster_path_in + "test/test_GW170817.hdf")
 testloader = DataLoader(testset, batch_size=1, shuffle=True)
 
 # GPU if available
@@ -50,6 +48,9 @@ print("Device = {}".format(dev))
 
 # Start from a previous checkpoint
 from_file = False
+epoch = 10
+train_file = cluster_path_model_checkpoints + \
+    "trained_rNVP_{}.pth".format(epoch)
 
 # Coupling layer
 s_net = flow.s_net
@@ -72,16 +73,13 @@ optimizer = torch.optim.Adam(
 
 # Training
 if from_file == True:
-    last_train_epoch = 5
-    train_file = cluster_path_model_checkpoints + \
-        "trained_rNVP_{}.pth".format(last_train_epoch)
     checkpoint = torch.load(local_path_model_checkpoints + train_file)
     rNVP.load_state_dict(checkpoint['model_state_dict'])
     optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
     epoch = checkpoint['epoch']
     loss = checkpoint['loss']
 
-max_epoch = 3
+max_epoch = 100
 epochs = np.arange(max_epoch)
 train_losses = np.zeros(max_epoch)
 val_losses = np.zeros(max_epoch)
@@ -121,7 +119,7 @@ for epoch in epochs:
         loss_val = - rNVP.log_prob(input, waveform).mean()
     val_losses[epoch] = loss_val
 
-    if epoch + 1 == 20 or epoch + 1 == 40:
+    if epoch + 1 % 10 == 0:
         print("Model saved.")
         torch.save({
             "epoch": epoch,
@@ -140,4 +138,4 @@ ax.set(xlabel="Epochs", ylabel="Loss")
 ax.grid()
 ax.legend()
 # plt.savefig("figures/loss.png")
-# plt.savefig(cluster_path_fig + "loss.png")
+plt.savefig(cluster_path_fig + "loss.png", transparent=True)

@@ -29,12 +29,12 @@ cluster_path_model_checkpoints = "/scratch/alapel/checkpoints/"
 cluster_path_fig = "/scratch/alapel/figures/"
 
 # Training file
-last_epoch = 5
+last_epoch = 10
 train_file = "trained_rNVP_{}.pth".format(last_epoch)
 
 # Test waveforms
 testset = hdf5datasets.HDF5EoSDataset(
-    local_path_in + "testset_freq_projected_nonoise.hdf")
+    cluster_path_in + "test/test_GW170817.hdf")
 testloader = DataLoader(testset, batch_size=1, shuffle=True)
 
 # Coupling layer
@@ -68,7 +68,7 @@ test_waveform = testset[0][0]
 params = [testset[0][1], testset[0][2], testset[0][3], testset[0][4]]
 
 # The number of samples have to be a fraction of the batch_size
-batch_size = 50
+batch_size = 10
 test_waveform_repeat = torch.from_numpy(
     np.tile(test_waveform, (batch_size, 1)))
 
@@ -81,17 +81,19 @@ for i in range(N):
         dtype)).detach().numpy()
     samples = np.vstack([samples, x])
 
+mass_prior = [0.5, 2.]   # From nuclear physics (real min = 0.18 Mo)
+lambda_prior = [0, 1000]  # Range based on low spin prior X < 0.05
+
 # Renormalization of the sample
-upper_values = [1.7, 1.36, 600]
-samples[:, 0] *= upper_values[0]
-samples[:, 1] *= upper_values[1]
-samples[:, 2] *= upper_values[2]
-samples[:, 3] *= upper_values[2]
+samples[:, 0] *= mass_prior[1]
+samples[:, 1] *= mass_prior[1]
+samples[:, 2] *= lambda_prior[1]
+samples[:, 3] *= lambda_prior[2]
 
 # TODO : improve the plot
 figure = corner.corner(
     samples, labels=[r"$m_1$", r"$m_2$", r"$\Lambda_1$", r"$\Lambda_2$"],
-    show_titles=True, truths=[params[0]*upper_values[0], params[1]*upper_values[1],
-                              params[2]*upper_values[2], params[3]*upper_values[2]])
-# plt.savefig("figures/posterior_masses_lambdas.png")
-plt.savefig(local_path_fig + "posterior_masses_lambdas.png")
+    show_titles=True, truths=[params[0]*mass_prior[1], params[1]*mass_prior[1],
+                              params[2]*lambda_prior[1], params[3]*lambda_prior[1]])
+plt.savefig(cluster_path_fig +
+            "posterior_masses_lambdas_epoch{}.png".format(last_epoch))

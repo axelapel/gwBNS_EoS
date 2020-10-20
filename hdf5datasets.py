@@ -33,14 +33,13 @@ class HDF5EoSDataset(Dataset):
 
 
 def merge_sets(path_dir):
-
+    """
+    Merge several hdf5 dataset into one.
+    """
     datasets = []
-
     for filepath in glob.iglob(path_dir):
+        dataset = HDF5EoSDataset(filepath)
+        datasets.append(dataset)
+    merged_set = ConcatDataset(datasets)
 
-        train_dataset = HDF5EoSDataset(filepath)
-        datasets.append(train_dataset)
-
-    merged_trainset = ConcatDataset(datasets)
-
-    return merged_trainset
+    return merged_set

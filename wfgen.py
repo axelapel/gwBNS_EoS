@@ -38,9 +38,9 @@ local_path = "data/"
 cluster_path = "/scratch/alapel/data/"
 
 # Filenames
-train = "trainset_{}.hdf".format(str(args.index))
-evaluation = "validationset_{}.hdf".format(str(args.index))
-test = "test_GW170817.hdf"
+train = "train/trainset_{}.hdf".format(str(args.index))
+evaluation = "evaluation/validationset_{}.hdf".format(str(args.index))
+test = "test/test_GW170817.hdf"
 
 
 # Adaptive step for compression

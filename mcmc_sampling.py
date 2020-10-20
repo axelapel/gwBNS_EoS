@@ -102,7 +102,7 @@ likelihood = bilby.gw.GravitationalWaveTransient(
 
 # Run sampler
 result = bilby.run_sampler(
-    likelihood=likelihood, priors=priors, sampler='emcee', npoints=1000,
+    likelihood=likelihood, priors=priors, sampler='emcee', npoints=10000,
     injection_parameters=injection_parameters, outdir=outdir, label=label,
     conversion_function=bilby.gw.conversion.generate_all_bns_parameters,
     resume=True)

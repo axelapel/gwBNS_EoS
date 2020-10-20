@@ -4,7 +4,7 @@
 #SBATCH --gres=gpu:1
 #SBATCH -N 1
 #SBATCH --ntasks-per-node=4
-#SBATCH -t 16:00:00
+#SBATCH -t 50:00:00
 #SBATCH -A a226
 #SBATCH -e ../log_train/%N.%j.%a.err
 #SBATCH -o ../log_train/%N.%j.%a.out

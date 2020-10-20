@@ -32,7 +32,7 @@ class HDF5EoSDataset(Dataset):
             return len(file.keys())
 
 
-def merge_trainsets(path_dir):
+def merge_sets(path_dir):
 
     datasets = []
 

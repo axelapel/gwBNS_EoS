@@ -67,13 +67,13 @@ priors.pop('lambda_2')
 priors.pop("mass_ratio")
 priors.pop("chirp_mass")
 priors['mass_1'] = bilby.core.prior.Uniform(
-    1.36, 1.7, name='mass_1')
+    1., 2., name='mass_1')
 priors['mass_2'] = bilby.core.prior.Uniform(
-    1.17, 1.36, name='mass_2')
+    1., 2., name='mass_2')
 priors['lambda_1'] = bilby.core.prior.Uniform(
-    0, 600, name='lambda_1')
+    0, 1000, name='lambda_1')
 priors['lambda_2'] = bilby.core.prior.Uniform(
-    0, 600, name='lambda_2')
+    0, 1000, name='lambda_2')
 
 # For spectral decomposition
 """

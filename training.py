@@ -24,15 +24,15 @@ cluster_path_fig = "/scratch/alapel/figures/"
 batch_size = 500
 # Train
 trainset = hdf5datasets.HDF5EoSDataset(
-    cluster_path_in + "trainset_freq_projected_nonoise.hdf")
+    local_path_in + "trainset_freq_projected_nonoise.hdf")
 trainloader = DataLoader(trainset, batch_size=batch_size, shuffle=True)
 # Validation
 evalset = hdf5datasets.HDF5EoSDataset(
-    cluster_path_in + "validationset_freq_projected_nonoise.hdf")
+    local_path_in + "validationset_freq_projected_nonoise.hdf")
 evaloader = DataLoader(evalset, batch_size=batch_size, shuffle=True)
 # Test
 testset = hdf5datasets.HDF5EoSDataset(
-    cluster_path_in + "testset_freq_projected_nonoise.hdf")
+    local_path_in + "testset_freq_projected_nonoise.hdf")
 testloader = DataLoader(testset, batch_size=1, shuffle=True)
 
 # GPU if available
@@ -50,9 +50,6 @@ print("Device = {}".format(dev))
 
 # Start from a previous checkpoint
 from_file = False
-last_train_epoch = 5
-train_file = cluster_path_model_checkpoints + \
-    "trained_rNVP_{}.pth".format(last_train_epoch)
 
 # Coupling layer
 s_net = flow.s_net
@@ -75,13 +72,16 @@ optimizer = torch.optim.Adam(
 
 # Training
 if from_file == True:
+    last_train_epoch = 5
+    train_file = cluster_path_model_checkpoints + \
+        "trained_rNVP_{}.pth".format(last_train_epoch)
     checkpoint = torch.load(local_path_model_checkpoints + train_file)
     rNVP.load_state_dict(checkpoint['model_state_dict'])
     optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
     epoch = checkpoint['epoch']
     loss = checkpoint['loss']
 
-max_epoch = 40
+max_epoch = 3
 epochs = np.arange(max_epoch)
 train_losses = np.zeros(max_epoch)
 val_losses = np.zeros(max_epoch)
@@ -140,4 +140,4 @@ ax.set(xlabel="Epochs", ylabel="Loss")
 ax.grid()
 ax.legend()
 # plt.savefig("figures/loss.png")
-plt.savefig(cluster_path_fig + "loss.png")
+# plt.savefig(cluster_path_fig + "loss.png")

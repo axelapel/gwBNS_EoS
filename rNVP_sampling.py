@@ -34,7 +34,7 @@ train_file = "trained_rNVP_{}.pth".format(last_epoch)
 
 # Test waveforms
 testset = hdf5datasets.HDF5EoSDataset(
-    cluster_path_in + "testset_freq_projected_nonoise.hdf")
+    local_path_in + "testset_freq_projected_nonoise.hdf")
 testloader = DataLoader(testset, batch_size=1, shuffle=True)
 
 # Coupling layer
@@ -68,7 +68,7 @@ test_waveform = testset[0][0]
 params = [testset[0][1], testset[0][2], testset[0][3], testset[0][4]]
 
 # The number of samples have to be a fraction of the batch_size
-batch_size = 500
+batch_size = 50
 test_waveform_repeat = torch.from_numpy(
     np.tile(test_waveform, (batch_size, 1)))
 
@@ -94,4 +94,4 @@ figure = corner.corner(
     show_titles=True, truths=[params[0]*upper_values[0], params[1]*upper_values[1],
                               params[2]*upper_values[2], params[3]*upper_values[2]])
 # plt.savefig("figures/posterior_masses_lambdas.png")
-plt.savefig(cluster_path_fig + "posterior_masses_lambdas.png")
+plt.savefig(local_path_fig + "posterior_masses_lambdas.png")

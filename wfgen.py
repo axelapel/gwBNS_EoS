@@ -26,22 +26,22 @@ def save(list_of_concatenated_strains, list_of_associated_params, path):
         print("\rAll files saved.\n")
 
 
-# Paths
+# If file is too large and requires segmentation
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "--index", type=int, default=None, help="Index to indentify the set of waveforms")
+args = parser.parse_args()
+
+
+# Outdir
 local_path = "data/"
 cluster_path = "/scratch/alapel/data/"
 
-train = "trainset_freq_projected_nonoise.hdf"
-evaluation = "validationset_freq_projected_nonoise.hdf"
-test = "testset_freq_projected_nonoise.hdf"
+# Filenames
+train = "trainset_{}.hdf".format(str(args.index))
+evaluation = "validationset_{}.hdf".format(str(args.index))
+test = "test_GW170817.hdf"
 
-# Get arguments (if file is too large and requires segmentation)
-"""
-description = "Generate waveforms"
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    "--index", type=int, default=None, help="Index to indentify the waveform")
-args = parser.parse_args()
-"""
 
 # Adaptive step for compression
 # /!\ Not possible with pycbc waveform
@@ -66,16 +66,18 @@ polarization = 0
 
 list_of_concatenated_strains = []
 list_of_params = []
-n_samples = 76000
+n_samples = 10000
+
+mass_prior = [0.5, 2.]   # From nuclear physics (real min = 0.18 Mo)
+lambda_prior = [0, 1000]  # Range based on low spin prior X < 0.05
 
 for i in range(n_samples):
 
     # Uniform priors
-    upper_values = [1.7, 1.36, 600]
-    mass1 = np.random.uniform(1.36, upper_values[0])
-    mass2 = np.random.uniform(1.17, upper_values[1])
-    lambda1 = np.random.uniform(0, upper_values[2])
-    lambda2 = np.random.uniform(0, upper_values[2])
+    mass2 = np.random.uniform(mass_prior[0], mass_prior[1])
+    mass1 = np.random.uniform(mass2, mass_prior[1])  # m1 > m2
+    lambda1 = np.random.uniform(lambda_prior[0], lambda_prior[1])
+    lambda2 = np.random.uniform(lambda_prior[0], lambda_prior[1])
 
     # Intrinsic parameters for the waveform
     dict_params = dict(approximant="IMRPhenomPv2_NRTidal",
@@ -121,10 +123,10 @@ for i in range(n_samples):
     imag_v1 = signal_v1.imag()
 
     # Storing + normalization
-    list_of_params.append({"mass_1": mass1/upper_values[0],
-                           "mass_2": mass2/upper_values[1],
-                           "lambda_1": lambda1/upper_values[2],
-                           "lambda_2": lambda2/upper_values[2]})
+    list_of_params.append({"mass_1": mass1/mass_prior[1],
+                           "mass_2": mass2/mass_prior[1],
+                           "lambda_1": lambda1/lambda_prior[1],
+                           "lambda_2": lambda2/lambda_prior[1]})
     max = np.max((real_h1, real_l1, real_v1, imag_h1, imag_l1, imag_v1))
     list_of_concatenated_strains.append(
         np.concatenate((real_h1/max, real_l1/max, real_v1/max,
